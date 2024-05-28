@@ -1,0 +1,284 @@
+.NavBar {
+    display: flex;
+    list-style: none;
+    justify-content: end ;
+    margin-right: 50px;
+    gap: 2em;
+}
+
+.Job_Card {
+    border: 1px solid grey;
+    border-radius: 30px;
+    padding: 20px 20px;
+    margin: 10px 20px;
+}
+.Jobs_container {
+list-style: none;
+}
+
+
+.JobBoard_Applied {
+    color: navyblue;
+}
+.JobBoard_Apply {
+    height: 2em;
+    width: 5em;
+    background-color: cadetBlue;
+    border-radius: 5em;
+    border: none;
+}
+.error {
+    color: red;
+    padding: 10px;
+}
+
+.Post_Job_Container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.Post_Job_Container_Div {
+    margin-bottom: 15px;
+}
+
+.Post_Job_Container_Label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #333;
+}
+
+.Post_Job_Container_Input {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.error {
+    display: block;
+    margin-top: 5px;
+    color: #d9534f;
+    font-size: 14px;
+}
+.Post_Job_Container_Button {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+button[type="submit"] {
+    display: inline-block;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #5cb85c;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+}
+
+button[type="submit"]:hover {
+    background-color: #4cae4c;
+}
+
+@media (max-width: 768px) {
+    .Post_Job_Container {
+        padding: 15px;
+    }
+    
+    .Post_Job_Container_Input {
+        font-size: 14px;
+        padding: 6px;
+    }
+    
+    button[type="submit"] {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+}
+
+.Application_Form_Container {
+    max-width: 600px;
+    margin: 0 auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.Application_Form_Container h2 {
+    font-size: 24px;
+    color: #333;
+    margin-bottom: 20px;
+    text-align: center;
+}
+
+.Application_Form_Container_Div {
+    margin-bottom: 20px;
+}
+
+.Application_Form_Container_Label {
+    display: block;
+    margin-bottom: 10px;
+    font-weight: bold;
+    color: #333;
+}
+
+.Application_Form_Container_Input {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 5px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 16px;
+    box-sizing: border-box;
+}
+
+.error {
+    color: red;
+    font-size: 14px;
+    margin-top: 5px;
+    display: block;
+}
+
+.Application_Form_Container button {
+    display: block;
+    width: 100%;
+    padding: 10px 20px;
+    font-size: 16px;
+    color: #fff;
+    background-color: #007bff;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+    margin-top: 10px;
+}
+
+.Application_Form_Container button:hover {
+    background-color: #0056b3;
+}
+.ReactModal__Content {
+    max-width: 50em;
+    min-width: 5em;
+    width: auto !important;
+    
+}
+
+@media (max-width: 768px) {
+    .Application_Form_Container {
+        padding: 15px;
+    }
+
+    .Application_Form_Container h2 {
+        font-size: 20px;
+    }
+
+    .Application_Form_Container_Input {
+        font-size: 14px;
+        padding: 8px;
+    }
+
+    .Application_Form_Container button {
+        padding: 8px 16px;
+        font-size: 14px;
+    }
+    
+}
+
+
+.JobBoard_Container {
+    list-style-type: none;
+    padding: 0;
+    margin: 0 auto;
+    max-width: 800px;
+  }
+  
+  .JobBoard_Container_Li {
+    padding: 20px;
+    margin-bottom: 20px;
+    background-color: #f9f9f9;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+  
+  .JobBoard_Container_Li h3 {
+    margin: 0;
+    font-size: 1.5em;
+    color: #333;
+  }
+  
+  .JobBoard_Container_Span {
+    display: block;
+    margin-top: 5px;
+    font-size: 1em;
+    color: #555;
+  }
+  
+  .JobBoard_Container_Span:first-of-type {
+    margin-top: 10px;
+  }
+  
+  .JobBoard_Container_Apply,
+  .JobBoard_Container_Applied {
+    display: inline-block;
+    padding: 10px 20px;
+    margin-top: 15px;
+    font-size: 1em;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
+  }
+  
+  .JobBoard_Container_Apply {
+    background-color: #007bff;
+    color: #fff;
+  }
+  
+  .JobBoard_Container_Apply:hover {
+    background-color: #0056b3;
+  }
+  
+  .JobBoard_Container_Applied {
+    color: #28a745;
+    font-weight: bold;
+  }
+  
+  @media (max-width: 768px) {
+    .JobBoard_Container {
+      padding: 10px;
+    }
+  
+    .JobBoard_Container_Li {
+      padding: 15px;
+    }
+  
+    .JobBoard_Container_Span {
+      font-size: 0.9em;
+    }
+  
+    .JobBoard_Container_Apply,
+    .JobBoard_Container_Applied {
+      padding: 8px 16px;
+      font-size: 0.9em;
+    }
+  }
+  
+
