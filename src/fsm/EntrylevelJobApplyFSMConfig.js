@@ -21,14 +21,7 @@ const EntrylevelJobApplyFSMConfig = {
         validate: (input) => input.trim() !== '',
         on: {
           PREV: 'gpa',
-          NEXT: 'submit'
-        }
-      },
-      submit: {
-        displayText: 'Review your application and submit',
-        validate: () => true,
-        on: {
-          PREV: 'skills'
+         
         }
       }
     }

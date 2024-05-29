@@ -21,17 +21,11 @@ const JobApplyFSMConfig = {
         validate: (input) => input.trim() !== '',
         on: {
           PREV: 'education',
-          NEXT: 'submit'
-        }
-      },
-      submit: {
-        displayText: 'Review your application and submit',
-        validate: () => true,
-        on: {
-          PREV: 'skills'
+          
         }
       }
-    }
+      }
+    
   };
   
   export default JobApplyFSMConfig;

@@ -223,12 +223,17 @@ button[type="submit"]:hover {
     font-size: 1.5em;
     color: #333;
   }
+  .JobBoard_Container_Details_Section {
+    display: flex;
+    flex-wrap: wrap;
+  }
   
   .JobBoard_Container_Span {
-    display: block;
     margin-top: 5px;
     font-size: 1em;
     color: #555;
+    flex: 1 1 50%; 
+  margin-bottom: 8px; 
   }
   
   .JobBoard_Container_Span:first-of-type {

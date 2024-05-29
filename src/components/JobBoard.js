@@ -28,14 +28,15 @@ const JobBoard = ({ jobs, onApplied }) => {
         {jobs.map(job => (
           <li className="JobBoard_Container_Li" key={job._id}>
             <h3>{job.JobTitle}</h3>
+            <div className='JobBoard_Container_Details_Section'>
             <span className='JobBoard_Container_Span'> {job.CompanyName}</span>
-            <span className='JobBoard_Container_Span'> {job.Location}</span>
-            <span className='JobBoard_Container_Span'>Pay up to :{job.Salary}</span>
-            <span className='JobBoard_Container_Span'>Experience: {job.ExperienceLevel}</span>
-            <div>
+            <span className='JobBoard_Container_Span'> Location: {job.Location}</span>
+            <span className='JobBoard_Container_Span'>Pay Range :${job.Salary}</span>
+            <span className='JobBoard_Container_Span'>Experience Level: {job.ExperienceLevel}</span>
+            <span className='JobBoard_Container_Span'> Primary Skills:{job.Responsibilities}</span>
 
             </div>
-            <div>{job.Responsibilities}</div>
+            
            {job.applied ? <span className='JobBoard_Container_Applied'> Applied</span> :<button className='JobBoard_Container_Apply' onClick={() => handleApplyClick(job)}>Apply</button>}
           </li>
         ))}

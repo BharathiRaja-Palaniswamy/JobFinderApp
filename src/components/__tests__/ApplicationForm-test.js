@@ -1,43 +1,117 @@
 import React from 'react';
-import { render, fireEvent, waitFor, screen } from '@testing-library/react';
-import userEvent from '@testing-library/user-event';
-import '@testing-library/jest-dom/extend-expect';
-import ApplicationForm from '../../components/ApplicationForm';
+import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import ApplicationForm from '../ApplicationForm';
+import { useConfig } from '../../contexts/ConfigContext';
+import { postJob } from '../../services/JobsService';
+import FSM from '../../fsm/FSM'
+import EntryLevelJobAppFSMConfig from '../../fsm/EntrylevelJobApplyFSMConfig';
+import JobApplyFSMConfig from '../../fsm/JobApplyFSMConfig';
 
-describe('ApplicationForm Component', () => {
-    const mockJob = {"_id":{"$oid":"665525ca3be3530fcc471583"},"CompanyName":"Cognizant","JobTitle":"Senior Software Engineer","ExperienceLevel":"entrylevel","Salary":"250000","Location":"San jose","Responsibilities":"Front end","__v":{"$numberInt":"0"}};
-  test('renders without crashing', () => {
-    render(<ApplicationForm job={mockJob} />);
+jest.mock('../../contexts/ConfigContext');
+jest.mock('../../services/JobsService');
+jest.mock('../../fsm/FSM');
+
+describe('ApplicationForm', () => {
+  const mockUseConfig = (config) => {
+    useConfig.mockReturnValue(config);
+  };
+
+  const defaultProps = {
+    job: {
+      JobTitle: 'Software Engineer',
+      CompanyName: 'Tech Corp',
+      ExperienceLevel: 'entrylevel',
+      _id: 'job123',
+    },
+    onApplicationSubmitted: jest.fn(),
+    closeModal: jest.fn(),
+  };
+
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  test('displays form elements when FSM is enabled', () => {
-    render(<ApplicationForm job={mockJob} />);
-    const companyNameInput = screen.getByLabelText('Company Name');
-    const jobTitleInput = screen.getByLabelText('Job Title');
-    const experienceLevelInput = screen.getByLabelText('Experience Level');
-    const salaryInput = screen.getByLabelText('Salary');
-    const submitButton = screen.getByText('Submit');
+  test('Test to check if the form renders fine when FSM is enabled and selected job is entry level', () => {
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true, TEMPERORY_USER_ID: 'temp123' });
+    FSM.mockImplementation(() => ({
+      config: EntryLevelJobAppFSMConfig,
+      transition: jest.fn(),
+    }));
 
-    expect(companyNameInput).toBeInTheDocument();
-    expect(jobTitleInput).toBeInTheDocument();
-    expect(experienceLevelInput).toBeInTheDocument();
-    expect(salaryInput).toBeInTheDocument();
-    expect(submitButton).toBeInTheDocument();
+    render(<ApplicationForm {...defaultProps} />);
+    expect(screen.getByText(`Applying for Software Engineer at Tech Corp`)).toBeInTheDocument();
+   
   });
 
-  test('displays current state text when FSM is enabled', () => {
-    render(<ApplicationForm job={mockJob} />);
-    const currentStateText = screen.getByText('Current State Text');
-    expect(currentStateText).toBeInTheDocument();
+  test('Test to check if the form renders fine when FSM is enabled and selected job is non-entry level', () => {
+    const props = {
+      ...defaultProps,
+      job: {
+        ...defaultProps.job,
+        ExperienceLevel: 'entrylevel',
+      },
+    };
+
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true, TEMPERORY_USER_ID: 'temp123' });
+    FSM.mockImplementation(() => ({
+      config: JobApplyFSMConfig,
+      transition: jest.fn(),
+    }));
+
+    render(<ApplicationForm {...props} />);
+    expect(screen.getByLabelText(JobApplyFSMConfig.states[JobApplyFSMConfig.initial].displayText)).toBeInTheDocument();
   });
 
-  test('navigates to next state when Next button is clicked', () => {
-    render(<ApplicationForm job={mockJob} />);
-    const nextButton = screen.getByText('Next');
-    fireEvent.click(nextButton);
-    const updatedStateText = screen.getByText('Updated State Text');
-    expect(updatedStateText).toBeInTheDocument();
+  
+
+  test('Test to check form submission with FSM enabled', async () => {
+    const fsm = {
+      config: EntryLevelJobAppFSMConfig,
+      transition: jest.fn(),
+    };
+  
+    fsm.config.states = {
+      [EntryLevelJobAppFSMConfig.initial]: {
+        validate: jest.fn().mockReturnValue(true),
+        on: {},
+      },
+    };
+    fsm.config.initial = EntryLevelJobAppFSMConfig.initial;
+  
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true, TEMPERORY_USER_ID: 'temp123' });
+    FSM.mockImplementation(() => fsm);
+  
+    render(<ApplicationForm {...defaultProps} />);
+    fireEvent.change(screen.getByRole('textbox'), { target: { value: 'test input' } });
+  
+    fireEvent.click(screen.getByText('Submit'));
+    await waitFor(() => expect(defaultProps.onApplicationSubmitted).toHaveBeenCalledWith({
+      JobId: 'job123',
+      userId: 'temp123',
+      [EntryLevelJobAppFSMConfig.initial]: 'test input',
+    }));
   });
 
-  // Add more test cases as needed
+  test('Test to check form submission with FSM disabled', async () => {
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: false, TEMPERORY_USER_ID: 'temp123' });
+  
+    const mockSubmit = jest.fn(); // Mock the submit function
+  
+    render(<ApplicationForm {...defaultProps} onApplicationSubmitted={mockSubmit} />); 
+  
+    fireEvent.change(screen.getByLabelText(/How many years of experience do you have?/), { target: { value: '5' } });
+    fireEvent.change(screen.getByLabelText(/Do you have any experience in managing team/), { target: { value: 'Yes' } });
+    fireEvent.change(screen.getByLabelText(/Whats your current Location?/), { target: { value: 'New York' } });
+    fireEvent.change(screen.getByLabelText(/Are you willing to relocate/), { target: { value: 'No' } });
+  
+    fireEvent.click(screen.getByText('Submit'));
+    await waitFor(() => expect(mockSubmit).toHaveBeenCalledWith({ 
+      JobId: 'job123',
+      userId: 'temp123',
+      Experience: '5',
+      ManagementExperience: 'Yes',
+      Location: 'New York',
+      Relocate: 'No',
+    }));
+  });
 });

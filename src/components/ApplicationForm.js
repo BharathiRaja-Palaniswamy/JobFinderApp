@@ -44,24 +44,23 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
 
   const handleSubmit = async (JobId) => {
     try {
-    if (!JOB_APPLICATION_FSM_ENABLED) {
-      if (await validate()) {
-        formData.JobId = JobId;
-        formData.userId = TEMPERORY_USER_ID;
-        
-        await onApplicationSubmitted(formData);
-        console.log('Application Data:', formData);
-      }
-    } else {
-      if (fsm.config.states[currentState].validate(formData[currentState] || '')) {
-        formData.JobId = JobId;
-        formData.userId = TEMPERORY_USER_ID;
-        console.log('Application Data:', formData);
-        await onApplicationSubmitted(formData);
+      if (!JOB_APPLICATION_FSM_ENABLED) {
+        if (await validate()) {
+          formData.JobId = JobId;
+          formData.userId = TEMPERORY_USER_ID;
+
+          await onApplicationSubmitted(formData);
+        }
       } else {
-        alert('Please provide valid input');
+        if (fsm.config.states[currentState].validate(formData[currentState] || '')) {
+          formData.JobId = JobId;
+          formData.userId = TEMPERORY_USER_ID;
+          await onApplicationSubmitted(formData);
+        } else {
+          alert('Please provide valid input');
+        }
       }
-    } } catch (err) {
+    } catch (err) {
       console.log('errorOccured while applying job', err);
     }
   };
@@ -80,7 +79,7 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
     if (!formData.ManagementExperience) newErrors.ManagementExperience = "Management Experience is required";
     if (!formData.Location) newErrors.Location = "Your current Location is required";
     if (!formData.Relocate) newErrors.Relocate = "Relocate info is required";
-   await setErrors(newErrors);
+    await setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
   return (
@@ -88,8 +87,9 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
       <h2>Applying for {job.JobTitle} at {job.CompanyName}</h2>
       {fsm && currentState ?
         <div>
-          <label className='Application_Form_Container_Label'>{fsm.config.states[currentState].displayText}</label>
+          <label htmlFor={currentState} className='Application_Form_Container_Label'>{fsm.config.states[currentState].displayText}</label>
           <input
+            id={currentState}
             className='Application_Form_Container_Input'
             type="text"
             value={formData[currentState] || ''}
@@ -106,10 +106,10 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
           </div>
         </div>
         :
-        <form onSubmit={()=>handleSubmit(job._id)}>
+        <form onSubmit={() => handleSubmit(job._id)}>
           <div className='Application_Form_Container'>
             <div className='Application_Form_Container_Div'>
-              <label className='Application_Form_Container_Label'>How many years of experience do you have?</label>
+              <label htmlFor='Experience' className='Application_Form_Container_Label'>How many years of experience do you have?</label>
               <input
                 id="Experience"
                 type="text"
@@ -121,7 +121,7 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
             </div>
 
             <div className='Application_Form_Container_Div'>
-              <label className='Application_Form_Container_Label'>Do you have any experience in managing team ? </label>
+              <label htmlFor='ManagementExperience' className='Application_Form_Container_Label'>Do you have any experience in managing team ? </label>
               <input
                 id="ManagementExperience"
                 type="text"
@@ -132,7 +132,7 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
               {errors.ManagementExperience && <span className="error">{errors.ManagementExperience}</span>}
             </div>
             <div className='Application_Form_Container_Div'>
-              <label className='Application_Form_Container_Label'>Whats your current Location? </label>
+              <label htmlFor='Location' className='Application_Form_Container_Label'>Whats your current Location? </label>
               <input
                 id="Location"
                 type="text"
@@ -143,7 +143,7 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
               {errors.Location && <span className="error">{errors.Location}</span>}
             </div>
             <div className='Application_Form_Container_Div'>
-              <label className='Application_Form_Container_Label'>Are you willing to relocate ? </label>
+              <label htmlFor='Relocate' className='Application_Form_Container_Label'>Are you willing to relocate ? </label>
               <input
                 id="Relocate"
                 type="text"
