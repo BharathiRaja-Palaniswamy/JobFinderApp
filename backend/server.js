@@ -2,7 +2,6 @@ const express = require('express');
 const cors = require('cors');
 
 const connectDB = require('./config/db');
-const logger = require('./middleware/logger');
 
 const authRoutes = require('./routes/authRoutes');
 const jobRoutes = require('./routes/jobRoutes');
@@ -16,8 +15,6 @@ app.use(cors());
 connectDB();
 
 app.use(express.json({ extended: false }));
-app.use(logger);
-console.log('logger defined');
 
 
 
