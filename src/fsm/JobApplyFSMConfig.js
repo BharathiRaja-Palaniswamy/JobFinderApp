@@ -2,14 +2,14 @@ const JobApplyFSMConfig = {
     initial: 'workExperience',
     states: {
       workExperience: {
-        displayText: 'Describe your work experience',
+        displayText: 'How many years of experience you have as a senior engineer ?',
         validate: (input) => input.trim() !== '',
         on: {
           NEXT: 'education'
         }
       },
       education: {
-        displayText: 'What is your highest level of education?',
+        displayText: 'What is your highest level of education ?',
         validate: (input) => input.trim() !== '',
         on: {
           PREV: 'workExperience',
@@ -17,7 +17,7 @@ const JobApplyFSMConfig = {
         }
       },
       skills: {
-        displayText: 'List your skills relevant to the job',
+        displayText: 'What relevant skills you have for this job ?',
         validate: (input) => input.trim() !== '',
         on: {
           PREV: 'education',

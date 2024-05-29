@@ -1,24 +1,33 @@
 import React, { useState, useEffect } from 'react';
-import { postJob } from '../services/JobsService';
 import EntryLevelJobAppFSMConfig from '../fsm/EntrylevelJobApplyFSMConfig';
 import JobApplyFSMConfig from '../fsm/JobApplyFSMConfig';
 import FSM from '../fsm/FSM';
 import { useConfig } from '../contexts/ConfigContext';
 
-
+/**
+ * Represents the application form component for job application.
+ * @param {object} props - The props object.
+ * @param {object} props.job - The job object for which the application is being submitted.
+ * @param {Function} props.onApplicationSubmitted - The function to call when the application is submitted.
+ * @param {Function} props.closeModal - The function to close the modal after submission.
+ * @returns {JSX.Element} - The JSX element representing the application form.
+ */
 const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
+  // using constants from useConfig Hook
+  const { JOB_APPLICATION_FSM_ENABLED, TEMPERORY_USER_ID,ENTRY_LEVEL_JOBS_FSM_KEYWORDS } = useConfig();
 
-  const { JOB_APPLICATION_FSM_ENABLED, TEMPERORY_USER_ID } = useConfig();
+  // Component State variables 
   const [fsm, setFSM] = useState(null);
   const [currentState, setCurrentState] = useState(null);
   const [errors, setErrors] = useState({});
-
   const [formData, setFormData] = useState({});
   const jobExperienceLevel = job.ExperienceLevel;
+
+  // Hook to set FSM path based on the selected Job's Experience level
   useEffect(() => {
     let newFSM;
     if (JOB_APPLICATION_FSM_ENABLED) {
-      if (jobExperienceLevel === 'entrylevel') {
+      if (ENTRY_LEVEL_JOBS_FSM_KEYWORDS.includes(jobExperienceLevel.toLowerCase())) {
         newFSM = new FSM(EntryLevelJobAppFSMConfig);
       } else {
         newFSM = new FSM(JobApplyFSMConfig);
@@ -28,6 +37,7 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
     }
   }, [jobExperienceLevel]);
 
+  // Next state Handler for FSM
   const handleNext = () => {
     if (fsm.config.states[currentState].validate(formData[currentState] || '')) {
       const nextState = fsm.transition('NEXT');
@@ -37,18 +47,19 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
     }
   };
 
+  // Prev state Handler for FSM
   const handlePrev = () => {
     const prevState = fsm.transition('PREV');
     setCurrentState(prevState);
   };
 
+  // Application form submit handler
   const handleSubmit = async (JobId) => {
     try {
       if (!JOB_APPLICATION_FSM_ENABLED) {
         if (await validate()) {
           formData.JobId = JobId;
           formData.userId = TEMPERORY_USER_ID;
-
           await onApplicationSubmitted(formData);
         }
       } else {
@@ -65,14 +76,19 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
     }
   };
 
+  // Form data change Handler
   const handleChange = (e) => {
     const updatedFormData = { ...formData, [currentState]: e.target.value };
     setFormData(updatedFormData);
   };
+
+  // Form Data change handler for Non-Fsm Application forms
   const handleNonFsmChange = (e) => {
     const updatedFormData = { ...formData, [e.target.id]: e.target.value };
     setFormData(updatedFormData);
   };
+
+  // Validation function to check form data
   const validate = async () => {
     const newErrors = {};
     if (!formData.Experience) newErrors.Experience = "Experience is required";

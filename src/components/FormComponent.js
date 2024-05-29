@@ -4,76 +4,97 @@ import DetailedjobPostFSMConfig from '../fsm/DetailedjobPostFSMConfig';
 import FSM from '../fsm/FSM';
 import { useConfig } from '../contexts/ConfigContext';
 
-
+/**
+ * Form component for job posting.
+ * @param {object} props - The props object.
+ * @param {Function} props.onJobsUpdated - Function to call when jobs are updated.
+ * @returns {JSX.Element} - JSX element representing the form component.
+ */
 const FormComponent = ({ onJobsUpdated }) => {
+    const { JOB_POST_FSM_ENABLED } = useConfig();
     const [selectedOption, setSelectedOption] = useState(null);
     const [fsm, setFSM] = useState(null);
-    const {JOB_POST_FSM_ENABLED} = useConfig(); 
     const [errors, setErrors] = useState({});
-
     const [currentState, setCurrentState] = useState(DetailedjobPostFSMConfig.initial);
     const [formData, setFormData] = useState({});
-    useEffect(()=>{
-        if(JOB_POST_FSM_ENABLED) {
-            let newFSM;
-            newFSM = new FSM(DetailedjobPostFSMConfig);
+
+    /**
+     * Setting up FSM on initial rendering
+     */
+    useEffect(() => {
+        if (JOB_POST_FSM_ENABLED) {
+            let newFSM = new FSM(DetailedjobPostFSMConfig);
             setFSM(newFSM);
             setCurrentState(newFSM.config.initial);    
         }
-    }, [])
-    const handleOptionChange = (e) => {
-        setSelectedOption(e.target.value);
-        setFormData({}); 
-        let newFSM;
-        newFSM = new FSM(DetailedjobPostFSMConfig);
-        setFSM(newFSM);
-        setCurrentState(newFSM.config.initial);
-    };
+    }, []);
 
+    /**
+     * Next button click event handler
+     */
     const handleNext = () => {
         if (fsm.config.states[currentState].validate(formData[currentState] || '')) {
             const nextState = fsm.transition('NEXT');
-            console.log("Transitioned to Next State:", nextState);
             setCurrentState(nextState);
         } else {
             alert("Please provide valid input");
         }
     };
 
+    /**
+     * Prev button click event handler
+     */
     const handlePrev = () => {
         const prevState = fsm.transition('PREV');
         setCurrentState(prevState);
     };
 
+    /**
+     * Job Post submission handler
+     * @param {object} e - event object.
+     */
     const handleSubmit = async (e) => {
         e.preventDefault();
         if (!JOB_POST_FSM_ENABLED) {
-          if (validate()) {
-            console.log("Form Data:", formData);
-            const data = await postJob(formData);
-            onJobsUpdated();
-          } else {
-            console.log('Validation failed');
-          }
+            if (validate()) {
+                const data = await postJob(formData);
+                onJobsUpdated();
+            } else {
+                console.log('Validation failed');
+            }
         } else {
-        try {
-            console.log("Form Data:", formData);
-            const data = await postJob(formData);
-            onJobsUpdated();
-        } catch (e) {
-
+            try {
+                console.log("Form Data:", formData);
+                const data = await postJob(formData);
+                onJobsUpdated();
+            } catch (err) {
+                console.log('error occured', err)
+            }
         }
-    }
     };
 
+    /**
+     * Input field change handler
+     * @param {object} e - event object.
+     */
     const handleChange = (e) => {
         const updatedFormData = { ...formData, [currentState]: e.target.value };
         setFormData(updatedFormData);
     };
+
+    /**
+     * NonFsm Input field change handler
+     * @param {object} e - event object.
+     */
     const handleNonFsmChange = (e) => {
         const updatedFormData = { ...formData, [e.target.id]: e.target.value };
         setFormData(updatedFormData);
     };
+
+    /**
+     * Validates the form data.
+     * @returns {boolean} - Indicates whether the form data is valid or not.
+     */
     const validate = () => {
         const newErrors = {};
         if (!formData.CompanyName) newErrors.CompanyName = "Company Name is required";
@@ -81,8 +102,7 @@ const FormComponent = ({ onJobsUpdated }) => {
         if (!formData.ExperienceLevel) newErrors.ExperienceLevel = "Experience Level is required";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
-      };
-
+    };
     return (
         <div className='PostJob_Container'>
             <h2>Post a Job</h2>

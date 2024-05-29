@@ -32,7 +32,7 @@ describe('ApplicationForm', () => {
   });
 
   test('Test to check if the form renders fine when FSM is enabled and selected job is entry level', () => {
-    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true, TEMPERORY_USER_ID: 'temp123' });
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true, TEMPERORY_USER_ID: 'temp123', ENTRY_LEVEL_JOBS_FSM_KEYWORDS: ['junior','entry level','fresher','intern','entry level'], });
     FSM.mockImplementation(() => ({
       config: EntryLevelJobAppFSMConfig,
       transition: jest.fn(),
@@ -52,7 +52,7 @@ describe('ApplicationForm', () => {
       },
     };
 
-    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true, TEMPERORY_USER_ID: 'temp123' });
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true, TEMPERORY_USER_ID: 'temp123',ENTRY_LEVEL_JOBS_FSM_KEYWORDS: ['junior','entry level','fresher','intern','entry level'], });
     FSM.mockImplementation(() => ({
       config: JobApplyFSMConfig,
       transition: jest.fn(),
@@ -78,7 +78,7 @@ describe('ApplicationForm', () => {
     };
     fsm.config.initial = EntryLevelJobAppFSMConfig.initial;
   
-    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true, TEMPERORY_USER_ID: 'temp123' });
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true, TEMPERORY_USER_ID: 'temp123' ,ENTRY_LEVEL_JOBS_FSM_KEYWORDS: ['junior','entry level','fresher','intern','entry level'],});
     FSM.mockImplementation(() => fsm);
   
     render(<ApplicationForm {...defaultProps} />);
@@ -93,7 +93,7 @@ describe('ApplicationForm', () => {
   });
 
   test('Test to check form submission with FSM disabled', async () => {
-    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: false, TEMPERORY_USER_ID: 'temp123' });
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: false, TEMPERORY_USER_ID: 'temp123',ENTRY_LEVEL_JOBS_FSM_KEYWORDS: ['junior','entry level','fresher','intern','entry level'], });
   
     const mockSubmit = jest.fn(); // Mock the submit function
   
