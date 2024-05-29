@@ -176,7 +176,6 @@ button[type="submit"]:hover {
 .ReactModal__Content {
     max-width: 50em;
     min-width: 5em;
-    width: auto !important;
     
 }
 
