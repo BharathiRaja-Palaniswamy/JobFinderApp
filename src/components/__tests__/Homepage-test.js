@@ -3,7 +3,9 @@ import { render, fireEvent, waitFor } from '@testing-library/react';
 import '@testing-library/jest-dom/extend-expect';
 import Homepage from '../../components/Homepage';
 import { getJobs } from '../../services/JobsService';
+import { useConfig } from '../../contexts/ConfigContext';
 
+jest.mock('../../contexts/ConfigContext');
 jest.mock('../../components/ModalComponent', () => {
   return jest.fn(({ children }) => (
     <div data-testid="modal">
@@ -16,6 +18,11 @@ jest.mock('../../components/ModalComponent', () => {
 jest.mock('../../services/JobsService');
 
 describe('Homepage', () => {
+    const mockUseConfig = (config) => {
+        useConfig.mockReturnValue(config);
+      };
+      
+
   const mockJobs = [
     {
       _id: 'job1',
@@ -34,12 +41,14 @@ describe('Homepage', () => {
   });
 
   test('Test to check Homepage child elemented are rendering', () => {
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true });
     const { getByText,getByRole } = render(<Homepage />);
     expect(getByRole('navigation')).toBeInTheDocument();
     expect(getByText('Job Listings')).toBeInTheDocument();
   });
 
   test('Test to check Call to get job list is triggering', async () => {
+    mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true });
     render(<Homepage />);
     expect(getJobs).toHaveBeenCalledTimes(1);
     await waitFor(() => expect(getJobs).toHaveBeenCalledTimes(1));

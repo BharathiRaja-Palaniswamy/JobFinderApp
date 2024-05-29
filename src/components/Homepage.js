@@ -4,12 +4,14 @@ import Navbar from './Navbar';
 import JobBoard from './JobBoard';
 import FormComponent from './FormComponent';
 import ModalComponent from './ModalComponent';
+import { useConfig } from '../contexts/ConfigContext';
 
 /**
  * Homepage component displaying job board and job posting form.
  * @returns {JSX.Element} - JSX element representing the homepage component.
  */
 const Homepage = () => {
+    const { JOB_APPLICATION_FSM_ENABLED } = useConfig();
     const [jobs, setJobs] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -57,6 +59,9 @@ const Homepage = () => {
             <ModalComponent isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
                 <FormComponent onJobsUpdated={onJobsUpdated} />
             </ModalComponent>
+<div className='Homepage_Footer'>
+    {JOB_APPLICATION_FSM_ENABLED ? <span className='Homepage_Footer_Message'> <p className='Homepage_Footer_Message_Caption'>Note: </p>Currently FSM feature is enabled. You can notice questions asked in job applications more relevant to the job's experience level.</span> : <span className='Homepage_Footer_Message'> <p className='Homepage_Footer_Message_Caption'>Note: </p> Currently FSM feature is disabled. You can notice job applications having generic questions irrespective of experience level.</span>}
+</div>
         </div>
     );
 };
