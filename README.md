@@ -1,3 +1,19 @@
+# Job Finder Application
+Welcome to the Job Finder Application, built using the MERN stack with Finite State Machine (FSM) integration. This application is designed to streamline the job application process, making it more efficient and relevant for both employers and job seekers.
+
+## Overview
+The Job Finder Application addresses the common challenges in the job application process by ensuring that the information exchanged is highly relevant and specific to the job level being applied for. Our pipeline-based approach guarantees a stable and predictable application flow, reducing surprises and improving the overall experience for both parties.
+
+## Key Features
+Pipeline-Based Approach: Predefined steps guide job seekers through a tailored application process, presenting more relevant questions based on the job level.
+Finite State Machine Integration: Ensures a stable and predictable flow, reducing uncertainties and improving system reliability.
+Enhanced Data Relevance: By focusing on collecting pertinent information, employers receive high-quality applications, and job seekers benefit from a more targeted process.
+
+## Demo
+Curious to see the Job Finder Application in action? [Give it a try!](https://bharathiraja-palaniswamy.github.io/JobFinderApp/)
+
+
+
 # Getting Started with Create React App
 
 This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
