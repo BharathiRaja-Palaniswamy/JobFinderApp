@@ -1,6 +1,8 @@
+import config from '../constants/config'
+const {GET_JOBS_API_ENDPOINT,POST_JOB_API_ENDPOINT,APPLY_JOB_API_ENDPOINT} = config;
 export const getJobs = async () => {
     try {
-        const response = await fetch('http://localhost:5000/api/jobs/getJobs');
+        const response = await fetch(GET_JOBS_API_ENDPOINT);
         const res = await response.json();
         return res;
     } catch (e) {
@@ -9,7 +11,7 @@ export const getJobs = async () => {
 }
 export const postJob = async (job) => {
     try {
-        const response = await fetch('http://localhost:5000/api/jobs/postJob', {
+        const response = await fetch(POST_JOB_API_ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json' 
@@ -34,7 +36,7 @@ export const postJob = async (job) => {
 
 export const applyJob = async(application) => {
     try {
-        const response = await fetch('http://localhost:5000/api/jobs/applyJob', {
+        const response = await fetch(APPLY_JOB_API_ENDPOINT, {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

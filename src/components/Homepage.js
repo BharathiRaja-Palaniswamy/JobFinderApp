@@ -24,13 +24,17 @@ const Homepage = () => {
         setIsModalOpen(false);
         fetchJobs();
     };
+    
+    const onJobApplied = () => {
+        fetchJobs();
+    };
     useEffect(() => {
         fetchJobs();
     }, [])
     return (
         <div>
             <Navbar PostJobClicked={PostJobClicked} />
-            {jobs && <JobBoard  jobs={jobs}/>}
+            {jobs && <JobBoard  jobs={jobs} onApplied= {onJobApplied}/>}
             <ModalComponent isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
             <FormComponent onJobsUpdated= {onJobsUpdated} />
             </ModalComponent>

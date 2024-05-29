@@ -3,7 +3,7 @@ import { getJobs, applyJob } from '../services/JobsService';
 import ApplicationForm from './ApplicationForm';
 import ModalComponent from './ModalComponent';
 
-const JobBoard = ({ jobs }) => {
+const JobBoard = ({ jobs, onApplied }) => {
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -12,10 +12,12 @@ const JobBoard = ({ jobs }) => {
     setIsModalOpen(true);
   };
 
-  const handleApplicationSubmitted = (applicationData) => {
+  const handleApplicationSubmitted = async (applicationData) => {
+    
+    await applyJob(applicationData);
     console.log('Application Submitted:', applicationData);
-    applyJob(applicationData);
     setIsModalOpen(false);
+    onApplied();
   };
 
   return (

@@ -43,12 +43,14 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
   };
 
   const handleSubmit = async (JobId) => {
+    try {
     if (!JOB_APPLICATION_FSM_ENABLED) {
-      if (validate()) {
+      if (await validate()) {
         formData.JobId = JobId;
         formData.userId = TEMPERORY_USER_ID;
-        console.log('Application Data:', formData);
+        
         await onApplicationSubmitted(formData);
+        console.log('Application Data:', formData);
       }
     } else {
       if (fsm.config.states[currentState].validate(formData[currentState] || '')) {
@@ -59,6 +61,8 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
       } else {
         alert('Please provide valid input');
       }
+    } } catch (err) {
+      console.log('errorOccured while applying job', err);
     }
   };
 
@@ -70,13 +74,13 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
     const updatedFormData = { ...formData, [e.target.id]: e.target.value };
     setFormData(updatedFormData);
   };
-  const validate = () => {
+  const validate = async () => {
     const newErrors = {};
     if (!formData.Experience) newErrors.Experience = "Experience is required";
     if (!formData.ManagementExperience) newErrors.ManagementExperience = "Management Experience is required";
     if (!formData.Location) newErrors.Location = "Your current Location is required";
     if (!formData.Relocate) newErrors.Relocate = "Relocate info is required";
-    setErrors(newErrors);
+   await setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
   return (
