@@ -13,6 +13,7 @@ import { useConfig } from '../contexts/ConfigContext';
 const FormComponent = ({ onJobsUpdated }) => {
     const { JOB_POST_FSM_ENABLED } = useConfig();
     const [selectedOption, setSelectedOption] = useState(null);
+    const [jobPostStatus, setJobPostStatus] = useState('');
     const [fsm, setFSM] = useState(null);
     const [errors, setErrors] = useState({});
     const [currentState, setCurrentState] = useState(DetailedjobPostFSMConfig.initial);
@@ -25,19 +26,19 @@ const FormComponent = ({ onJobsUpdated }) => {
         if (JOB_POST_FSM_ENABLED) {
             let newFSM = new FSM(DetailedjobPostFSMConfig);
             setFSM(newFSM);
-            setCurrentState(newFSM.config.initial);    
+            setCurrentState(newFSM.config.initial);
         }
     }, []);
 
     /**
      * Next button click event handler
      */
-    const handleNext = () => {
+    const handleNext = async () => {
         if (fsm.config.states[currentState].validate(formData[currentState] || '')) {
             const nextState = fsm.transition('NEXT');
             setCurrentState(nextState);
         } else {
-            alert("Please provide valid input");
+            await setErrors({ error: 'Please provide valid input' });
         }
     };
 
@@ -54,22 +55,34 @@ const FormComponent = ({ onJobsUpdated }) => {
      * @param {object} e - event object.
      */
     const handleSubmit = async (e) => {
-        e.preventDefault();
-        if (!JOB_POST_FSM_ENABLED) {
-            if (validate()) {
-                const data = await postJob(formData);
+        try {
+            e.preventDefault();
+            let data;
+            if (!JOB_POST_FSM_ENABLED) {
+                if (validate()) {
+                    data = await postJob(formData);
+                    console.log('job posted', data);
+                    if (data?._id) {
+                        setJobPostStatus('success');
+                    }
+                } else {
+                    console.log('Validation failed');
+                }
+            } else {
+
+                console.log("Form Data:", formData);
+                data = await postJob(formData);
+                console.log('FSM job posted', data);
+
+            }
+            if (data?._id) {
+                setJobPostStatus('success');
                 onJobsUpdated();
             } else {
-                console.log('Validation failed');
+                setJobPostStatus('Error Occured');
             }
-        } else {
-            try {
-                console.log("Form Data:", formData);
-                const data = await postJob(formData);
-                onJobsUpdated();
-            } catch (err) {
-                console.log('error occured', err)
-            }
+        } catch (err) {
+            setJobPostStatus(err);
         }
     };
 
@@ -78,6 +91,7 @@ const FormComponent = ({ onJobsUpdated }) => {
      * @param {object} e - event object.
      */
     const handleChange = (e) => {
+        setErrors({});
         const updatedFormData = { ...formData, [currentState]: e.target.value };
         setFormData(updatedFormData);
     };
@@ -100,28 +114,30 @@ const FormComponent = ({ onJobsUpdated }) => {
         if (!formData.CompanyName) newErrors.CompanyName = "Company Name is required";
         if (!formData.JobTitle) newErrors.JobTitle = "Job Title is required";
         if (!formData.ExperienceLevel) newErrors.ExperienceLevel = "Experience Level is required";
+        if (!formData.Salary) newErrors.Salary = "Salary is required";
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
     return (
         <div className='PostJob_Container'>
             <h2>Post a Job</h2>
-
-            {fsm && currentState ?
-                <div>
+            {!jobPostStatus ? (
+                fsm && currentState ? (
                     <div>
-                        <label htmlFor={currentState}  className='Post_Job_Container_Label'>{fsm.config.states[currentState].displayText}</label> </div>
-                    <input id={currentState} className='Post_Job_Container_Input' type="text" value={formData[currentState] || ''} onChange={handleChange} />
-                    {currentState !== fsm.config.initial &&
-                        <button className='Post_Job_Container_Button' onClick={handlePrev}>Prev</button>
-                    }
-                    {'NEXT' in fsm.config.states[currentState].on ?
-                        <button className='Post_Job_Container_Button' onClick={handleNext}>Next</button> :
-                        <button className='Post_Job_Container_Button Submit' onClick={handleSubmit}>Submit</button>
-                    }
-                </div> :
+                        <div>
+                            <label htmlFor={currentState} className='Post_Job_Container_Label'>{fsm.config.states[currentState].displayText}</label> </div>
+                        <input id={currentState} className='Post_Job_Container_Input' type="text" value={formData[currentState] || ''} autoComplete='off' onChange={handleChange} />
+                        {errors?.error && <span className="error">{errors.error}</span>}
+                        {currentState !== fsm.config.initial &&
+                            <button className='Post_Job_Container_Button' onClick={handlePrev}>Prev</button>
+                        }
+                        {'NEXT' in fsm.config.states[currentState].on ?
+                            <button className='Post_Job_Container_Button' onClick={handleNext}>Next</button> :
+                            <button className='Post_Job_Container_Button Submit' onClick={handleSubmit}>Submit</button>
+                        }
+                    </div>
+                ) : (<form onSubmit={handleSubmit}>
 
-                <form onSubmit={handleSubmit}>
                     <div className='Post_Job_Container'>
                         <div className='Post_Job_Container_Div'>
                             <label htmlFor="CompanyName" className='Post_Job_Container_Label'>Company Name</label>
@@ -129,7 +145,8 @@ const FormComponent = ({ onJobsUpdated }) => {
                                 id="CompanyName"
                                 type="text"
                                 className='Post_Job_Container_Input'
-                                value={formData.CompanyName || ''}
+                                autoComplete='off'
+                                value={formData?.CompanyName || ''}
                                 onChange={handleNonFsmChange}
                             />
                             {errors.CompanyName && <span className="error">{errors.CompanyName}</span>}
@@ -141,20 +158,10 @@ const FormComponent = ({ onJobsUpdated }) => {
                                 type="text"
                                 className='Post_Job_Container_Input'
                                 value={formData.JobTitle || ''}
+                                autoComplete='off'
                                 onChange={handleNonFsmChange}
                             />
                             {errors.JobTitle && <span className="error">{errors.JobTitle}</span>}
-                        </div>
-                        <div className='Post_Job_Container_Div'>
-                            <label htmlFor="ExperienceLevel" className='Post_Job_Container_Label'>Experience Level</label>
-                            <input
-                                id="ExperienceLevel"
-                                type="text"
-                                className='Post_Job_Container_Input'
-                                value={formData.ExperienceLevel || ''}
-                                onChange={handleNonFsmChange}
-                            />
-                            {errors.ExperienceLevel && <span className="error">{errors.ExperienceLevel}</span>}
                         </div>
                         <div className='Post_Job_Container_Div'>
                             <label htmlFor="Salary" className='Post_Job_Container_Label'>Salary</label>
@@ -163,14 +170,47 @@ const FormComponent = ({ onJobsUpdated }) => {
                                 type="text"
                                 className='Post_Job_Container_Input'
                                 value={formData.Salary || ''}
+                                autoComplete='off'
                                 onChange={handleNonFsmChange}
                             />
-                            {errors.Salary && <span className="error">{errors.ExperienceLevel}</span>}
+                            {errors.Salary && <span className="error">{errors.Salary}</span>}
                         </div>
+                        <div className='Post_Job_Container_Div'>
+                            <label htmlFor="ExperienceLevel" className='Post_Job_Container_Label'>Experience Level</label>
+                            <div className='Post_Job_Container_Radio'>
+                                <label>
+                                    <input
+                                        id="ExperienceLevel"
+                                        name="ExperienceLevel"
+                                        type="radio"
+                                        value="Entry-Level"
+                                        checked={formData.ExperienceLevel === 'Entry-Level'}
+                                        onChange={handleNonFsmChange}
+                                    />
+                                    Entry Level
+                                </label>
+                                <label>
+                                    <input
+                                        id="ExperienceLevel"
+                                        name="ExperienceLevel"
+                                        type="radio"
+                                        value="Experienced"
+                                        checked={formData.ExperienceLevel === 'Experienced'}
+                                        onChange={handleNonFsmChange}
+                                    />
+                                    Experienced
+                                </label>
+                            </div>
+                            {errors.ExperienceLevel && <span className="error">{errors.ExperienceLevel}</span>}
+                        </div>
+                       
                         <button type="submit">Submit</button>
                     </div>
                 </form>
-            }
+                )
+            ) : (jobPostStatus === 'success' ? <h3 className='Post_Job_Container_Status_Success' >Job posted successfully</h3> : <h3 className='Post_Job_Container_Status_Error'>Sorry couldnt process this request. please try again later. </h3>)}
+
+
         </div>
 
 

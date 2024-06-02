@@ -11,6 +11,7 @@ import ModalComponent from './ModalComponent';
  * @returns {JSX.Element} - JSX element representing the job board component.
  */
 const JobBoard = ({ jobs, onApplied }) => {
+  console.log('jobboard rerendered');
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -27,44 +28,50 @@ const JobBoard = ({ jobs, onApplied }) => {
    * Callback function called when the application form is submitted.
    * @param {Object} applicationData - Data submitted from the application form.
    */
-  const handleApplicationSubmitted = async (applicationData) => {
-    await applyJob(applicationData);
-    console.log('Application Submitted:', applicationData);
-    setIsModalOpen(false);
-    onApplied();
+  const handleApplicationSubmitted = async () => {
+    try {
+      
+   onApplied();
+    } catch (err) {
+
+    }
   };
 
 
   return (
     <>
-      <h2>Job Listings</h2>
-      {jobs.length ?
-      <ul className="JobBoard_Container">
-        {jobs.map(job => (
-          <li className="JobBoard_Container_Li" key={job._id}>
-            <h3>{job.JobTitle}</h3>
-            <div className='JobBoard_Container_Details_Section'>
-            {job.CompanyName && <span className='JobBoard_Container_Span'> {job.CompanyName}</span>}
-            {job.Location && <span className='JobBoard_Container_Span'> Location: {job.Location}</span>}
-            {job.Salary && <span className='JobBoard_Container_Span'>Pay Range :${job.Salary}</span>}
-            {job.ExperienceLevel&& <span className='JobBoard_Container_Span'>Experience Level: {job.ExperienceLevel}</span>}
-            {job.Responsibilities && <span className='JobBoard_Container_Span'> Primary Skills:{job.Responsibilities}</span>}
+      <div className='JobBoard_Section'>
+       
+       
+          <ul className="JobBoard_Container">
+             <h2 className='JobBoard_Header'>Discover Jobs</h2>
+            {jobs.map(job => (
+              <li className="JobBoard_Container_Li" key={job._id}>
+                <h3>{job.JobTitle}</h3>
+                <div className='JobBoard_Container_Details_Section'>
+                  {job.CompanyName && <span className='JobBoard_Container_Span'> {job.CompanyName}</span>}
+                  {job.Location && <span className='JobBoard_Container_Span'> Location: {job.Location}</span>}
+                  {job.Salary && <span className='JobBoard_Container_Span'>Pay Range: ${job.Salary}</span>}
+                  {job.ExperienceLevel && <span className='JobBoard_Container_Span'>Experience Level: {job.ExperienceLevel}</span>}
+                  {job.Responsibilities && <span className='JobBoard_Container_Span'> Primary Skills: {job.Responsibilities}</span>}
 
-            </div>
+                </div>
+
+                {job.applied ? <span className='JobBoard_Container_Applied'> Applied</span> : <button className='JobBoard_Container_Apply' onClick={() => handleApplyClick(job)}>Apply</button>}
+              </li>
+            ))}
+          </ul> 
+          
+        {selectedJob && (
+          <ModalComponent data-testid='modal' isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
+            <ApplicationForm
+              job={selectedJob}
+              onApplicationSubmitted={handleApplicationSubmitted}
             
-           {job.applied ? <span className='JobBoard_Container_Applied'> Applied</span> :<button className='JobBoard_Container_Apply' onClick={() => handleApplyClick(job)}>Apply</button>}
-          </li>
-        ))}
-      </ul> : <h4>Sorry No jobs available. Please check later.</h4>}
-      {selectedJob && (
-        <ModalComponent data-testid='modal' isOpen={isModalOpen} onRequestClose={() => setIsModalOpen(false)}>
-          <ApplicationForm
-            job={selectedJob}
-            onApplicationSubmitted={handleApplicationSubmitted}
-            closeModal={() => setIsModalOpen(false)}
-          />
-        </ModalComponent>
-      )}
+            />
+          </ModalComponent>
+        )}
+      </div>
     </>
   );
 };

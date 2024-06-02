@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import EntryLevelJobAppFSMConfig from '../fsm/EntrylevelJobApplyFSMConfig';
+import { getJobs, applyJob } from '../services/JobsService';
+
 import JobApplyFSMConfig from '../fsm/JobApplyFSMConfig';
 import FSM from '../fsm/FSM';
 import { useConfig } from '../contexts/ConfigContext';
@@ -14,75 +16,96 @@ import { useConfig } from '../contexts/ConfigContext';
  */
 const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
   // using constants from useConfig Hook
-  const { JOB_APPLICATION_FSM_ENABLED, TEMPERORY_USER_ID,ENTRY_LEVEL_JOBS_FSM_KEYWORDS } = useConfig();
+  const { JOB_APPLICATION_FSM_ENABLED, TEMPERORY_USER_ID, ENTRY_LEVEL_JOBS_FSM_KEYWORDS } = useConfig();
 
   // Component State variables 
   const [fsm, setFSM] = useState(null);
   const [currentState, setCurrentState] = useState(null);
+  const [jobApplyStatus, setJobApplyStatus] = useState('');
   const [errors, setErrors] = useState({});
   const [formData, setFormData] = useState({});
   const jobExperienceLevel = job.ExperienceLevel;
 
   // Hook to set FSM path based on the selected Job's Experience level
   useEffect(() => {
+    console.log('rerendering application form')
     let newFSM;
     if (JOB_APPLICATION_FSM_ENABLED) {
-      if (ENTRY_LEVEL_JOBS_FSM_KEYWORDS.includes(jobExperienceLevel.toLowerCase())) {
+      if (ENTRY_LEVEL_JOBS_FSM_KEYWORDS.map((keyword) => keyword.toLowerCase()).includes(jobExperienceLevel.toLowerCase())) {
         newFSM = new FSM(EntryLevelJobAppFSMConfig);
       } else {
         newFSM = new FSM(JobApplyFSMConfig);
       }
       setFSM(newFSM);
       setCurrentState(newFSM.config.initial);
+
     }
   }, [jobExperienceLevel]);
 
   // Next state Handler for FSM
-  const handleNext = () => {
+  const handleNext = async (e) => {
+    e.preventDefault();
     if (fsm.config.states[currentState].validate(formData[currentState] || '')) {
       const nextState = fsm.transition('NEXT');
       setCurrentState(nextState);
     } else {
-      alert('Please provide valid input');
+      await setErrors({ error: 'Please provide valid input' });
     }
   };
 
   // Prev state Handler for FSM
-  const handlePrev = () => {
+  const handlePrev = (e) => {
+    e.preventDefault();
     const prevState = fsm.transition('PREV');
     setCurrentState(prevState);
   };
 
   // Application form submit handler
-  const handleSubmit = async (JobId) => {
+  const handleSubmit = async (e) => {
     try {
+      e.preventDefault();
+
       if (!JOB_APPLICATION_FSM_ENABLED) {
         if (await validate()) {
-          formData.JobId = JobId;
+          formData.JobId = job?._id;
           formData.userId = TEMPERORY_USER_ID;
-          await onApplicationSubmitted(formData);
+          const jobApplicationResponse = await applyJob(formData);
+          if (jobApplicationResponse?._id) {
+            setJobApplyStatus('success');
+          } else {
+            setJobApplyStatus('error');
+          }
         }
       } else {
-        if (fsm.config.states[currentState].validate(formData[currentState] || '')) {
-          formData.JobId = JobId;
+        if (fsm?.config?.states[currentState]?.validate(formData[currentState] || '')) {
+          formData.JobId = job?._id;
           formData.userId = TEMPERORY_USER_ID;
-          await onApplicationSubmitted(formData);
+          const jobApplicationResponse = await applyJob(formData);
+          if (jobApplicationResponse?._id) {
+            setJobApplyStatus('success');
+          } else {
+            setJobApplyStatus('error');
+          }
         } else {
-          alert('Please provide valid input');
+          await setErrors({ error: 'Please provide valid input' });
         }
       }
+       onApplicationSubmitted();
     } catch (err) {
       console.log('errorOccured while applying job', err);
+      setJobApplyStatus('error');
     }
-  };
+  }
+
 
   // Form data change Handler
   const handleChange = (e) => {
+    setErrors({});
     const updatedFormData = { ...formData, [currentState]: e.target.value };
     setFormData(updatedFormData);
   };
 
-  // Form Data change handler for Non-Fsm Application forms
+  // Form Data change handler for No  n-Fsm Application forms
   const handleNonFsmChange = (e) => {
     const updatedFormData = { ...formData, [e.target.id]: e.target.value };
     setFormData(updatedFormData);
@@ -98,39 +121,51 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
     await setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
+  // const StandardForm = () => {
+  //   return (
+
+  //   );
+  // }
   return (
+
     <div className='Application_Form_Container'>
       <h2>Applying for {job.JobTitle} at {job.CompanyName}</h2>
-      {fsm && currentState ?
-        <div>
-          <label htmlFor={currentState} className='Application_Form_Container_Label'>{fsm.config.states[currentState].displayText}</label>
-          <input
-            id={currentState}
-            className='Application_Form_Container_Input'
-            type="text"
-            value={formData[currentState] || ''}
-            onChange={handleChange}
-          />
-          <div className='Application_Form_Container_Buttons' >
-            {currentState !== fsm.config.initial &&
-              <button className='Application_Form_Container_Button' onClick={handlePrev}>Prev</button>
-            }
-            {'NEXT' in fsm.config.states[currentState].on ?
-              <button className='Application_Form_Container_Button' onClick={handleNext}>Next</button> :
-              <button className='Application_Form_Container_Button Submit' onClick={() => handleSubmit(job._id)}>Submit</button>
-            }
-          </div>
-        </div>
-        :
-        <form onSubmit={() => handleSubmit(job._id)}>
-          <div className='Application_Form_Container'>
+      {!jobApplyStatus ?
+        (fsm && currentState ? (
+          // IF FSM enaled Render Questionaire from FSM Configuration
+          <div>
+            <label htmlFor={currentState} className='Application_Form_Container_Label'>{fsm.config.states[currentState].displayText}</label>
+            <input
+              id={currentState}
+              className='Application_Form_Container_Input'
+              type="text"
+              autoComplete='off'
+              value={formData[currentState] || ''}
+              onChange={handleChange}
+            />
+            {errors?.error && <span className="error">{errors.error}</span>}
+
+            <div className='Application_Form_Container_Buttons' >
+              {currentState !== fsm.config.initial &&
+                <button type='button' className='Application_Form_Container_Button' onClick={(e) => handlePrev(e)}>Prev</button>
+              }
+              {'NEXT' in fsm.config.states[currentState].on ?
+                <button type='button' className='Application_Form_Container_Button' onClick={(e) => handleNext(e)}>Next</button> :
+                <button type='submit' className='Application_Form_Container_Button Submit' onClick={(e) => handleSubmit(e)} >Submit</button>
+              }
+            </div>
+          </div>)
+          :
+          (<div className='Application_Form_Container'>
             <div className='Application_Form_Container_Div'>
               <label htmlFor='Experience' className='Application_Form_Container_Label'>How many years of experience do you have?</label>
               <input
                 id="Experience"
+                key="Experience"
                 type="text"
                 className='Application_Form_Container_Input'
-                value={formData.Experience || ''}
+                value={formData?.Experience || ''}
+                autoComplete='off'
                 onChange={handleNonFsmChange}
               />
               {errors.Experience && <span className="error">{errors.Experience}</span>}
@@ -142,7 +177,8 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
                 id="ManagementExperience"
                 type="text"
                 className='Application_Form_Container_Input'
-                value={formData.ManagementExperience || ''}
+                value={formData?.ManagementExperience || ''}
+                autoComplete='off'
                 onChange={handleNonFsmChange}
               />
               {errors.ManagementExperience && <span className="error">{errors.ManagementExperience}</span>}
@@ -153,7 +189,8 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
                 id="Location"
                 type="text"
                 className='Application_Form_Container_Input'
-                value={formData.Location || ''}
+                value={formData?.Location || ''}
+                autoComplete='off'
                 onChange={handleNonFsmChange}
               />
               {errors.Location && <span className="error">{errors.Location}</span>}
@@ -164,16 +201,17 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
                 id="Relocate"
                 type="text"
                 className='Application_Form_Container_Input'
-                value={formData.Relocate || ''}
+                value={formData?.Relocate || ''}
+                autoComplete='off'
                 onChange={handleNonFsmChange}
               />
               {errors.Relocate && <span className="error">{errors.Relocate}</span>}
             </div>
-            <button type="submit">Submit</button>
+            <button type="submit" onClick={(e) => handleSubmit(e)}>Submit</button>
           </div>
-        </form>
-      }
-    </div>
+          )) : (jobApplyStatus === 'success' ? <h3 className='Application_Form_Container_Success' > Congrats! You have applied successfully!</h3> : <h3 className='Application_Form_Container_Error'>Sorry! couldnt process this request. Please try again later. </h3>)}
+      
+    </div >
   );
 };
 

@@ -1,3 +1,9 @@
+.NavBar-Container {
+    position: fixed;
+    top: 0px;
+    width: 100vw;
+    background-color: #2AA7D6;
+}
 .NavBar {
     display: flex;
     list-style: none;
@@ -27,10 +33,7 @@ list-style: none;
     border-radius: 5em;
     border: none;
 }
-.error {
-    color: red;
-    padding: 10px;
-}
+
 
 .Post_Job_Container {
     max-width: 600px;
@@ -40,7 +43,12 @@ list-style: none;
     border-radius: 8px;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
-
+.Post_Job_Container_Status_Error {
+    color: red;
+}
+.Post_Job_Container_Status_Success {
+    color: #5cb85c;
+}
 .Post_Job_Container_Div {
     margin-bottom: 15px;
 }
@@ -61,12 +69,7 @@ list-style: none;
     box-sizing: border-box;
 }
 
-.error {
-    display: block;
-    margin-top: 5px;
-    color: #d9534f;
-    font-size: 14px;
-}
+
 .Post_Job_Container_Button {
     display: block;
     width: 100%;
@@ -174,10 +177,17 @@ button[type="submit"]:hover {
     background-color: #0056b3;
 }
 .ReactModal__Content {
-    max-width: 50em;
-    min-width: 5em;
-    
+   
+    width: 30vw;
 }
+@media  (max-width: 768px) {
+    .ReactModal__Content {
+   
+        width: 100vw;
+    }
+   
+  }
+
 
 @media (max-width: 768px) {
     .Application_Form_Container {
@@ -206,6 +216,7 @@ button[type="submit"]:hover {
     padding: 0;
     margin: 0 auto;
     max-width: 800px;
+    margin-top: 60px;
   }
   
   .JobBoard_Container_Li {
@@ -284,7 +295,10 @@ button[type="submit"]:hover {
       font-size: 0.9em;
     }
   }
-
+  .Homepage_Body {
+    margin-top: 60px;
+  }
+  
   .Homepage_Footer {
     background-color: #333;
     color: #fff;
@@ -316,3 +330,6 @@ button[type="submit"]:hover {
 }
   
 
+.PostJob_Container, .Application_Form_Container {
+    padding: 0px 10px;
+}

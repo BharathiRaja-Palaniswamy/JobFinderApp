@@ -1,5 +1,5 @@
 import config from '../constants/config'
-const {GET_JOBS_API_ENDPOINT,POST_JOB_API_ENDPOINT,APPLY_JOB_API_ENDPOINT} = config;
+const { GET_JOBS_API_ENDPOINT, POST_JOB_API_ENDPOINT, APPLY_JOB_API_ENDPOINT } = config;
 /**
  * Retrieves the list of jobs from the server.
  * @returns {Promise<Array>} - A promise that resolves to an array of job objects.
@@ -25,7 +25,7 @@ export const postJob = async (job) => {
         const response = await fetch(POST_JOB_API_ENDPOINT, {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json' 
+                'Content-Type': 'application/json'
             },
             body: JSON.stringify(job)
 
@@ -33,13 +33,14 @@ export const postJob = async (job) => {
         if (!response.ok) {
             throw new Error('Failed to create Job', response);
         }
-        
         const data = await response.json();
         if (data) {
             console.log('Job created:', data);
         }
+        return data;
     } catch (e) {
         console.log('Error occurred while posting job', e);
+        return e;
     }
 }
 
@@ -48,7 +49,7 @@ export const postJob = async (job) => {
  * @param {Object} application - The application object to be submitted.
  * @throws {Error} - Throws an error if there is a problem applying for the job.
  */
-export const applyJob = async(application) => {
+export const applyJob = async (application) => {
     try {
         const response = await fetch(APPLY_JOB_API_ENDPOINT, {
             method: 'POST',
@@ -60,11 +61,12 @@ export const applyJob = async(application) => {
         if (!response.ok) {
             throw new Error('Failed to apply for Job', response);
         }
-        
+
         const data = await response.json();
         if (data) {
             console.log('Job applied:', data);
         }
+        return data;
     } catch (e) {
         console.log('Error occurred while applying for job', e);
     }
