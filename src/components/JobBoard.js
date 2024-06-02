@@ -46,15 +46,14 @@ const JobBoard = ({ jobs, onApplied }) => {
               <h3>{job.JobTitle}</h3>
               <div className="JobBoard_Container_Details_Section">
                 {job.CompanyName && (
-                  <span className="JobBoard_Container_Span">
-                    {" "}
+                  <span className="JobBoard_Container_Span CompanyName">
+                   
                     {job.CompanyName}
                   </span>
                 )}
-                {job.Location && (
+                {job.JobLocation && (
                   <span className="JobBoard_Container_Span">
-                    {" "}
-                    Location: {job.Location}
+                    Location: {job.JobLocation}
                   </span>
                 )}
                 {job.Salary && (
@@ -67,12 +66,7 @@ const JobBoard = ({ jobs, onApplied }) => {
                     Experience Level: {job.ExperienceLevel}
                   </span>
                 )}
-                {job.Responsibilities && (
-                  <span className="JobBoard_Container_Span">
-                    {" "}
-                    Primary Skills: {job.Responsibilities}
-                  </span>
-                )}
+               
               </div>
 
               {job.applied ? (

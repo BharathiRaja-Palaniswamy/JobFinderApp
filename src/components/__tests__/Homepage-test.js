@@ -57,7 +57,7 @@ describe("Homepage", () => {
     mockUseConfig({ JOB_APPLICATION_FSM_ENABLED: true });
     const { getByText, getByRole } = render(<Homepage />);
     expect(getByRole("navigation")).toBeInTheDocument();
-    expect(getByText("Jobs Loading. Please wait...")).toBeInTheDocument();
+    expect(getByText('Sorry No jobs available at this time. Please try again later')).toBeInTheDocument();
   });
 
   test("Test to check Homepage while jobs are fetched", async () => {

@@ -38,6 +38,10 @@ describe("FormComponent", () => {
     fireEvent.change(getByLabelText("Salary"), {
       target: { value: "$100,000" },
     });
+    fireEvent.change(getByLabelText("Job Location"), {
+      target: { value: "San Jose" },
+    });
+    
     fireEvent.click(getByText("Submit"));
     await waitFor(() => {
       expect(postJob).toHaveBeenCalled();

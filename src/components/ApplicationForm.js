@@ -281,7 +281,6 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
         )
       ) : jobApplyStatus === "success" ? (
         <h3 className="Application_Form_Container_Success">
-          {" "}
           Congrats! You have applied successfully!
         </h3>
       ) : (

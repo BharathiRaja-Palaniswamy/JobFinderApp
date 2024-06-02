@@ -119,6 +119,8 @@ const FormComponent = ({ onJobsUpdated }) => {
     if (!formData.ExperienceLevel)
       newErrors.ExperienceLevel = "Experience Level is required";
     if (!formData.Salary) newErrors.Salary = "Salary is required";
+    if (!formData.JobLocation) newErrors.JobLocation = "Job Location is required";
+    
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
@@ -220,6 +222,22 @@ const FormComponent = ({ onJobsUpdated }) => {
                 />
                 {errors.Salary && (
                   <span className="error">{errors.Salary}</span>
+                )}
+              </div>
+              <div className="Post_Job_Container_Div">
+                <label htmlFor="JobLocation" className="Post_Job_Container_Label">
+                  Job Location
+                </label>
+                <input
+                  id="JobLocation"
+                  type="text"
+                  className="Post_Job_Container_Input"
+                  value={formData.JobLocation || ""}
+                  autoComplete="off"
+                  onChange={handleNonFsmChange}
+                />
+                {errors.Salary && (
+                  <span className="error">{errors.JobLocation}</span>
                 )}
               </div>
               <div className="Post_Job_Container_Div">

@@ -12,7 +12,6 @@ import { useConfig } from "../contexts/ConfigContext";
  */
 const Homepage = () => {
   const { JOB_APPLICATION_FSM_ENABLED } = useConfig();
-  const [isFetching, setIsFetching] = useState(false);
   const [jobs, setJobs] = useState([]);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
@@ -21,14 +20,11 @@ const Homepage = () => {
    */
   const fetchJobs = async () => {
     try {
-      setIsFetching(true);
       const data = await getJobs();
       setJobs(data);
       console.log("jobs", data);
-      setIsFetching(false);
     } catch (err) {
       console.log("Error occured while fetching data", err);
-      setIsFetching(false);
     }
   };
 
@@ -63,9 +59,7 @@ const Homepage = () => {
     <div>
       <Navbar PostJobClicked={PostJobClicked} />
       <div className="Homepage_Body">
-        {isFetching ? (
-          <h1>Jobs Loading. Please wait...</h1>
-        ) : jobs?.length ? (
+        { jobs?.length ? (
           <JobBoard jobs={jobs} onApplied={onJobApplied} />
         ) : (
           <h1>Sorry No jobs available at this time. Please try again later</h1>
@@ -80,15 +74,13 @@ const Homepage = () => {
       <div className="Homepage_Footer">
         {JOB_APPLICATION_FSM_ENABLED ? (
           <span className="Homepage_Footer_Message">
-            {" "}
-            <p className="Homepage_Footer_Message_Caption">Note: </p>Currently
+            <span className="Homepage_Footer_Message_Caption">Note: </span>Currently
             FSM feature is enabled. You can notice questions asked in job
             applications more relevant to the job's experience level.
           </span>
         ) : (
           <span className="Homepage_Footer_Message">
-            {" "}
-            <p className="Homepage_Footer_Message_Caption">Note: </p> Currently
+            <span className="Homepage_Footer_Message_Caption">Note: </span> Currently
             FSM feature is disabled. You can notice job applications having
             generic questions irrespective of experience level.
           </span>

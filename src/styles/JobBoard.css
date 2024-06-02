@@ -11,6 +11,10 @@
     margin-right: 50px;
     gap: 2em;
 }
+.NavBar_PostJob {
+    cursor: pointer;
+    color: white;
+}
 
 .Job_Card {
     border: 1px solid grey;
@@ -68,6 +72,7 @@ list-style: none;
     font-size: 16px;
     box-sizing: border-box;
 }
+
 
 
 .Post_Job_Container_Button {
@@ -151,6 +156,14 @@ button[type="submit"]:hover {
     font-size: 16px;
     box-sizing: border-box;
 }
+.Application_Form_Container_Success {
+    color: #5cb85c;
+    text-align: center;
+}
+.Application_Form_Container_Error {
+    color: red;
+    text-align: center;
+}
 
 .error {
     color: red;
@@ -231,7 +244,7 @@ button[type="submit"]:hover {
   .JobBoard_Container_Li h3 {
     margin: 0;
     font-size: 1.5em;
-    color: #333;
+    color: #0a66c2;
   }
   .JobBoard_Container_Details_Section {
     display: flex;
@@ -245,6 +258,9 @@ button[type="submit"]:hover {
     flex: 1 1 50%; 
   margin-bottom: 8px; 
   }
+  .JobBoard_Container_Span.CompanyName {
+   font-weight: bold;
+}
   
   .JobBoard_Container_Span:first-of-type {
     margin-top: 10px;
@@ -253,7 +269,6 @@ button[type="submit"]:hover {
   .JobBoard_Container_Apply,
   .JobBoard_Container_Applied {
     display: inline-block;
-    padding: 10px 20px;
     margin-top: 15px;
     font-size: 1em;
     border: none;
@@ -264,6 +279,7 @@ button[type="submit"]:hover {
   
   .JobBoard_Container_Apply {
     background-color: #007bff;
+    padding: 10px 20px;
     color: #fff;
   }
   
@@ -289,14 +305,15 @@ button[type="submit"]:hover {
       font-size: 0.9em;
     }
   
-    .JobBoard_Container_Apply,
-    .JobBoard_Container_Applied {
+    .JobBoard_Container_Apply {
       padding: 8px 16px;
       font-size: 0.9em;
     }
   }
   .Homepage_Body {
-    margin-top: 60px;
+    margin-bottom: 60px;
+    overflow-x: hidden;
+    overflow-y: scroll;
   }
   
   .Homepage_Footer {
@@ -307,7 +324,6 @@ button[type="submit"]:hover {
     position: fixed;
     bottom: 0;
     width: 100%;
-    margin-top: auto;
 }
 
 .Homepage_Footer_Message {

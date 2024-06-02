@@ -12,12 +12,10 @@ const Navbar = ({ PostJobClicked }) => {
   return (
     <nav className="NavBar-Container">
       <ul className="NavBar">
-        <li>
-          <FaEdit onClick={PostJobClicked} style={{ cursor: "pointer" }} />
+        <li className='NavBar_PostJob' onClick={PostJobClicked}>
+         <span> <FaEdit  /> Post Job </span>
         </li>
-        <li>
-          <FaUser />
-        </li>
+        
       </ul>
     </nav>
   );
