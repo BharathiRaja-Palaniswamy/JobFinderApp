@@ -33,7 +33,9 @@ class FSM {
       this.currentState = currentStateConfig.on[action];
       return this.currentState;
     }
-    throw new Error(`Action "${action}" not allowed from state "${this.currentState}"`);
+    throw new Error(
+      `Action "${action}" not allowed from state "${this.currentState}"`
+    );
   }
 
   /**
@@ -41,7 +43,7 @@ class FSM {
    * @returns {string} - The new current state after transition.
    */
   next() {
-    return this.transition('NEXT');
+    return this.transition("NEXT");
   }
 
   /**
@@ -49,7 +51,7 @@ class FSM {
    * @returns {string} - The new current state after transition.
    */
   prev() {
-    return this.transition('PREV');
+    return this.transition("PREV");
   }
 }
 

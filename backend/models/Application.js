@@ -1,13 +1,19 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
-const ApplicationSchrema = new mongoose.Schema({
-  
-  userId: {
-    type: String,
+const ApplicationSchrema = new mongoose.Schema(
+  {
+    userId: {
+      type: String,
+    },
+    JobId: {
+      type: String,
+    },
   },
-  JobId: {
-    type: String,
-  }
-},{ "strict": false })
+  { strict: false }
+);
 
-module.exports = mongoose.model('Applications', ApplicationSchrema,'applications');
+module.exports = mongoose.model(
+  "Applications",
+  ApplicationSchrema,
+  "applications"
+);
