@@ -69,7 +69,7 @@ const FormComponent = ({ onJobsUpdated }) => {
             setJobPostStatus("success");
           }
         } else {
-          console.log("Validation failed");
+          return;
         }
       } else {
         console.log("Form Data:", formData);
@@ -170,7 +170,6 @@ const FormComponent = ({ onJobsUpdated }) => {
             )}
           </div>
         ) : (
-          <form onSubmit={handleSubmit}>
             <div className="Post_Job_Container">
               <div className="Post_Job_Container_Div">
                 <label
@@ -259,9 +258,8 @@ const FormComponent = ({ onJobsUpdated }) => {
                 )}
               </div>
 
-              <button type="submit">Submit</button>
+              <button type="submit" onClick={(e) => handleSubmit(e)}>Submit</button>
             </div>
-          </form>
         )
       ) : jobPostStatus === "success" ? (
         <h3 className="Post_Job_Container_Status_Success">

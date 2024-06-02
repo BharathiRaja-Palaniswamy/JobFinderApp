@@ -38,7 +38,6 @@ exports.getJobs = async (req, res) => {
 };
 exports.applyJob = async (req, res) => {
   try {
-    console.log("Applying for job", req.body);
     const { id } = req.params;
     const newApplication = new Application(req.body);
     const ApplicationResponse = await newApplication.save();

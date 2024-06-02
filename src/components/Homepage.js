@@ -43,7 +43,6 @@ const Homepage = () => {
    * Callback function to update parent once job is posted
    */
   const onJobsUpdated = () => {
-    // setIsModalOpen(false);
     fetchJobs();
   };
 
