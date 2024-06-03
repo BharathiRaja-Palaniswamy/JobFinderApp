@@ -3,25 +3,35 @@ const JobApplyFSMConfig = {
   states: {
     workExperience: {
       displayText:
-        "How many years of experience you have as a senior engineer ?",
+        "How many years of Engineering experience do you currently have?",
       validate: (input) => input.trim() !== "",
       on: {
-        NEXT: "education",
+        NEXT: "architectExperience",
       },
     },
-    education: {
-      displayText: "What is your highest level of education ?",
+    architectExperience: {
+      displayText:
+        "How many years of experience do you have in software architecture design, distributed systems, data management? ",
       validate: (input) => input.trim() !== "",
       on: {
         PREV: "workExperience",
+        NEXT: "management",
+      },
+    },
+    management: {
+      displayText: "Do you have any Team management experience?",
+      validate: (input) => input.trim() !== "",
+      on: {
+        PREV: "architectExperience",
         NEXT: "skills",
       },
     },
     skills: {
-      displayText: "What relevant skills you have for this job ?",
+      displayText:
+        "Do you have any professional experience on building native mobile app?",
       validate: (input) => input.trim() !== "",
       on: {
-        PREV: "education",
+        PREV: "management",
       },
     },
   },

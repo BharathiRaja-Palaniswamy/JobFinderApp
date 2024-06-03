@@ -14,14 +14,22 @@ const EntrylevelJobApplyFSMConfig = {
         !isNaN(input) && parseFloat(input) >= 0 && parseFloat(input) <= 4,
       on: {
         PREV: "internshipExperience",
-        NEXT: "skills",
+        NEXT: "portfolio",
       },
     },
-    skills: {
-      displayText: "List your skills relevant to the job",
+    portfolio: {
+      displayText: "Do you have a portfolio where we can view the projects you've worked on?",
       validate: (input) => input.trim() !== "",
       on: {
         PREV: "gpa",
+        NEXT: "openness",
+      },
+    },
+    openness: {
+      displayText: "Are you open to learning new technologies and tools as required for the job?",
+      validate: (input) => input.trim() !== "",
+      on: {
+        PREV: "portfolio",
       },
     },
   },
