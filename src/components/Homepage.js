@@ -76,7 +76,7 @@ const Homepage = () => {
           <span className="Homepage_Footer_Message">
             <span className="Homepage_Footer_Message_Caption">Note: </span>Currently
             FSM feature is enabled. You can notice questions asked in job
-            applications more relevant to the job's experience level.
+            applications are more relevant to the job's experience level.
           </span>
         ) : (
           <span className="Homepage_Footer_Message">
