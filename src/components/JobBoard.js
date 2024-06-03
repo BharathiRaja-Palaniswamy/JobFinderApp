@@ -3,7 +3,6 @@ import ApplicationForm from "./ApplicationForm";
 import ModalComponent from "./ModalComponent";
 import { useConfig } from "../contexts/ConfigContext";
 
-
 /**
  * JobBoard component displaying available jobs.
  * @param {Object} props - Component properties.
@@ -15,7 +14,7 @@ const JobBoard = ({ jobs, onApplied }) => {
   console.log("jobboard rerendered");
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
-  const {JOB_BOARD_HEADER_TEXT} = useConfig();
+  const { JOB_BOARD_HEADER_TEXT } = useConfig();
 
   /**
    * Handles the click event for applying to a job.
@@ -37,66 +36,68 @@ const JobBoard = ({ jobs, onApplied }) => {
   };
 
   return (
-    <>
-      <div className="JobBoard_Section">
-        <ul className="JobBoard_Container">
-          <h2 className="JobBoard_Header">{JOB_BOARD_HEADER_TEXT}</h2>
-          {jobs.map((job) => (
-            <li className="JobBoard_Container_Li" key={job._id}>
-              <h3>{job.JobTitle}</h3>
-              <div className="JobBoard_Container_Details_Section">
-                {job.CompanyName && (
-                  <span className="JobBoard_Container_Span CompanyName">
-                   
-                    {job.CompanyName}
-                  </span>
-                )}
-                {job.JobLocation && (
-                  <span className="JobBoard_Container_Span">
-                    Location: {job.JobLocation}
-                  </span>
-                )}
-                {job.Salary && (
-                  <span className="JobBoard_Container_Span">
-                    Pay Range: ${job.Salary}
-                  </span>
-                )}
-                {job.ExperienceLevel && (
-                  <span className="JobBoard_Container_Span">
-                    Experience Level: {job.ExperienceLevel}
-                  </span>
-                )}
-               
-              </div>
+    <div className="JobBoard_Section">
+      {jobs?.length ? (
+        <>
+          <ul className="JobBoard_Container">
+            <h2 className="JobBoard_Header">{JOB_BOARD_HEADER_TEXT}</h2>
+            {jobs.map((job) => (
+              <li className="JobBoard_Container_Li" key={job._id}>
+                <h3>{job.JobTitle}</h3>
+                <div className="JobBoard_Container_Details_Section">
+                  {job.CompanyName && (
+                    <span className="JobBoard_Container_Span CompanyName">
+                      {job.CompanyName}
+                    </span>
+                  )}
+                  {job.JobLocation && (
+                    <span className="JobBoard_Container_Span">
+                      Location: {job.JobLocation}
+                    </span>
+                  )}
+                  {job.Salary && (
+                    <span className="JobBoard_Container_Span">
+                      Pay Range: ${job.Salary}
+                    </span>
+                  )}
+                  {job.ExperienceLevel && (
+                    <span className="JobBoard_Container_Span">
+                      Experience Level: {job.ExperienceLevel}
+                    </span>
+                  )}
+                </div>
 
-              {job.applied ? (
-                <span className="JobBoard_Container_Applied"> Applied</span>
-              ) : (
-                <button
-                  className="JobBoard_Container_Apply"
-                  onClick={() => handleApplyClick(job)}
-                >
-                  Apply
-                </button>
-              )}
-            </li>
-          ))}
-        </ul>
+                {job.applied ? (
+                  <span className="JobBoard_Container_Applied"> Applied</span>
+                ) : (
+                  <button
+                    className="JobBoard_Container_Apply"
+                    onClick={() => handleApplyClick(job)}
+                  >
+                    Apply
+                  </button>
+                )}
+              </li>
+            ))}
+          </ul>
 
-        {selectedJob && (
-          <ModalComponent
-            data-testid="modal"
-            isOpen={isModalOpen}
-            onRequestClose={() => setIsModalOpen(false)}
-          >
-            <ApplicationForm
-              job={selectedJob}
-              onApplicationSubmitted={handleApplicationSubmitted}
-            />
-          </ModalComponent>
-        )}
-      </div>
-    </>
+          {selectedJob && (
+            <ModalComponent
+              data-testid="modal"
+              isOpen={isModalOpen}
+              onRequestClose={() => setIsModalOpen(false)}
+            >
+              <ApplicationForm
+                job={selectedJob}
+                onApplicationSubmitted={handleApplicationSubmitted}
+              />
+            </ModalComponent>
+          )}
+        </>
+      ) : (
+        <h4>Sorry No jobs available at this time. Please try again later.</h4>
+      )}
+    </div>
   );
 };
 

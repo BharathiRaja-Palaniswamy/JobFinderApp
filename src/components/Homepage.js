@@ -12,7 +12,7 @@ import { useConfig } from "../contexts/ConfigContext";
  */
 const Homepage = () => {
   const { JOB_APPLICATION_FSM_ENABLED } = useConfig();
-  const [jobs, setJobs] = useState([]);
+  const [jobs, setJobs] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   /**
@@ -59,10 +59,10 @@ const Homepage = () => {
     <div>
       <Navbar PostJobClicked={PostJobClicked} />
       <div className="Homepage_Body">
-        { jobs?.length ? (
+        { jobs ? (
           <JobBoard jobs={jobs} onApplied={onJobApplied} />
         ) : (
-          <h1>Sorry No jobs available at this time. Please try again later</h1>
+          <h4>Jobs are loading. Please wait...</h4>
         )}
         <ModalComponent
           isOpen={isModalOpen}

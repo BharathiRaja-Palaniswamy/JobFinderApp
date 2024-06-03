@@ -132,7 +132,7 @@ describe("ApplicationForm", () => {
       ENTRY_LEVEL_JOBS_FSM_KEYWORDS: ["Entry-Level"],
     });
 
-    const mockSubmit = jest.fn(); // Mock the submit function
+    const mockSubmit = jest.fn(); 
 
     render(
       <ApplicationForm {...defaultProps} onApplicationSubmitted={mockSubmit} />
@@ -158,4 +158,5 @@ describe("ApplicationForm", () => {
       expect(mockSubmit).toHaveBeenCalled();
     });
   });
+  
 });

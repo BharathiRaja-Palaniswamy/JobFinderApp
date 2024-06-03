@@ -117,7 +117,7 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
     setFormData(updatedFormData);
   };
 
-  // Form Data change handler for No  n-Fsm Application forms
+  // Form Data change handler for Non-Fsm Application forms
   const handleNonFsmChange = (e) => {
     const updatedFormData = { ...formData, [e.target.id]: e.target.value };
     setFormData(updatedFormData);
