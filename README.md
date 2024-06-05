@@ -12,11 +12,9 @@ Enhanced Data Relevance: By focusing on collecting pertinent information, employ
 ## Demo
 Curious to see the Job Finder Application in action? [Give it a try!](https://bharathiraja-palaniswamy.github.io/JobFinderApp/)
 
-
-
-# Getting Started with Create React App
-
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+## Client side mock Response
+To test it offline, please set below flag in .env file
+REACT_APP_USE_MOCK = true
 
 ## Available Scripts
 
