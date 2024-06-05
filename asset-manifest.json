@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/JobFinderApp/static/css/main.ca0e6955.css",
+    "main.js": "/JobFinderApp/static/js/main.60e97918.js",
+    "static/js/453.649b0d8f.chunk.js": "/JobFinderApp/static/js/453.649b0d8f.chunk.js",
+    "index.html": "/JobFinderApp/index.html",
+    "main.ca0e6955.css.map": "/JobFinderApp/static/css/main.ca0e6955.css.map",
+    "main.60e97918.js.map": "/JobFinderApp/static/js/main.60e97918.js.map",
+    "453.649b0d8f.chunk.js.map": "/JobFinderApp/static/js/453.649b0d8f.chunk.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.ca0e6955.css",
+    "static/js/main.60e97918.js"
+  ]
+}
