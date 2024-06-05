@@ -64,7 +64,6 @@ const FormComponent = ({ onJobsUpdated }) => {
       if (!JOB_POST_FSM_ENABLED) {
         if (validate()) {
           data = await postJob(formData);
-          console.log("job posted", data);
           if (data?._id) {
             setJobPostStatus("success");
           }
@@ -74,7 +73,6 @@ const FormComponent = ({ onJobsUpdated }) => {
       } else {
         console.log("Form Data:", formData);
         data = await postJob(formData);
-        console.log("FSM job posted", data);
       }
       if (data?._id) {
         setJobPostStatus("success");
@@ -111,7 +109,6 @@ const FormComponent = ({ onJobsUpdated }) => {
    * @returns {boolean} - Indicates whether the form data is valid or not.
    */
   const validate = () => {
-    console.log('formData',formData);
     const newErrors = {};
     if (!formData.CompanyName)
       newErrors.CompanyName = "Company Name is required";

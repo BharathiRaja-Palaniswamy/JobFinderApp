@@ -11,7 +11,6 @@ import { useConfig } from "../contexts/ConfigContext";
  * @returns {JSX.Element} - JSX element representing the job board component.
  */
 const JobBoard = ({ jobs, onApplied }) => {
-  console.log("jobboard rerendered");
   const [selectedJob, setSelectedJob] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const { JOB_BOARD_HEADER_TEXT } = useConfig();

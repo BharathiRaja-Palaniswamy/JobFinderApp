@@ -4,6 +4,14 @@ const fs = require('fs');
 const path = require('path');
 const webpack = require('webpack');
 const resolve = require('resolve');
+const dotenv = require('dotenv'); 
+const env = dotenv.config().parsed || {}; 
+
+// Define envKeys object
+const envKeys = Object.keys(env).reduce((prev, next) => {
+  prev[`process.env.${next}`] = JSON.stringify(env[next]);
+  return prev;
+}, {});
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CaseSensitivePathsPlugin = require('case-sensitive-paths-webpack-plugin');
 const InlineChunkHtmlPlugin = require('react-dev-utils/InlineChunkHtmlPlugin');
@@ -47,7 +55,6 @@ const babelRuntimeRegenerator = require.resolve('@babel/runtime/regenerator', {
 // Some apps do not need the benefits of saving a web request, so not inlining the chunk
 // makes for a smoother build process.
 const shouldInlineRuntimeChunk = process.env.INLINE_RUNTIME_CHUNK !== 'false';
-
 const emitErrorsAsWarnings = process.env.ESLINT_NO_DEV_ERRORS === 'true';
 const disableESLintPlugin = process.env.DISABLE_ESLINT_PLUGIN === 'true';
 
@@ -589,6 +596,7 @@ module.exports = function (webpackEnv) {
             : undefined
         )
       ),
+      new webpack.DefinePlugin(envKeys),
       // Inlines the webpack runtime script. This script is too small to warrant
       // a network request.
       // https://github.com/facebook/create-react-app/issues/5358
@@ -748,6 +756,7 @@ module.exports = function (webpackEnv) {
           },
         }),
     ].filter(Boolean),
+    
     // Turn off performance processing because we utilize
     // our own hints via the FileSizeReporter
     performance: false,

@@ -32,7 +32,6 @@ const ApplicationForm = ({ job, onApplicationSubmitted, closeModal }) => {
 
   // Hook to set FSM path based on the selected Job's Experience level
   useEffect(() => {
-    console.log("rerendering application form");
     let newFSM;
     if (JOB_APPLICATION_FSM_ENABLED) {
       if (
